@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopflow
+    driver-class-name: org.postgresql.Driver
+    username: ${DB_USERNAME:shopflow}
+    password: ${DB_PASSWORD:shopflow}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  h2:
+    console:
+      enabled: false
