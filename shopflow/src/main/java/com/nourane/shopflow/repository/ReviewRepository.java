@@ -20,11 +20,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     boolean existsByCustomerIdAndProductId(Long customerId, Long productId);
 
-    @Query("SELECT COUNT(r) > 0 FROM Review r " +
-           "JOIN OrderItem oi ON oi.product = r.product " +
-           "JOIN Order o ON oi.order = o " +
-           "WHERE o.customer.id = :customerId AND r.product.id = :productId AND o.statut = 'DELIVERED'")
-    boolean hasCustomerBoughtProduct(@Param("customerId") Long customerId, @Param("productId") Long productId);
+    // ✅ CORRECTION : la query JPQL précédente était invalide (JOIN entre entités non liées).
+    //    On passe correctement par Order → items → product avec le statut DELIVERED.
+    @Query("""
+        SELECT COUNT(o) > 0
+        FROM Order o
+        JOIN o.items oi
+        WHERE o.customer.id = :customerId
+          AND oi.product.id = :productId
+          AND o.statut = com.nourane.shopflow.entity.enums.OrderStatus.DELIVERED
+        """)
+    boolean hasCustomerBoughtProduct(@Param("customerId") Long customerId,
+                                     @Param("productId") Long productId);
 
     Page<Review> findByApprouveFalse(Pageable pageable);
 }

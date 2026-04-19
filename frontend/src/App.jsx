@@ -11,6 +11,7 @@ import ProductDetailPage from './ProductDetailPage';
 import CartPage from './CartPage';
 import OrdersPage from './OrdersPage';
 import CheckoutPage from './CheckoutPage';
+import ProfilePage from './ProfilePage';   // ✅ AJOUT
 import SellerDashboard from './SellerDashboard';
 import AdminDashboard from './AdminDashboard';
 import { LoginPage, RegisterPage } from './services/AuthPages';
@@ -21,26 +22,27 @@ function App() {
       <Navbar />
       <main style={{ minHeight: '80vh' }}>
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/catalogue" element={<CataloguePage />} />
+          <Route path="/"           element={<HomePage />} />
+          <Route path="/catalogue"  element={<CataloguePage />} />
           <Route path="/produit/:id" element={<ProductDetailPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/cart" element={<CartPage />} />
+          <Route path="/login"      element={<LoginPage />} />
+          <Route path="/register"   element={<RegisterPage />} />
+          <Route path="/cart"       element={<CartPage />} />
 
-          {/* Routes Protégées */}
+          {/* Routes protégées — authentification requise */}
           <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
-          <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
-          
+          <Route path="/orders"   element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
+          {/* ✅ AJOUT : Route profil */}
+          <Route path="/profil"   element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+
           <Route path="/seller" element={
             <ProtectedRoute roles={['SELLER']}><SellerDashboard /></ProtectedRoute>
           } />
-          
+
           <Route path="/admin" element={
             <ProtectedRoute roles={['ADMIN']}><AdminDashboard /></ProtectedRoute>
           } />
 
-          {/* Redirection 404 en dernier */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

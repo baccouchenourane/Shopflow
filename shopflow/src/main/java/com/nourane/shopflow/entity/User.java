@@ -19,6 +19,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = {"addresses", "cart", "sellerProfile"})
+@ToString(exclude = {"addresses", "cart", "sellerProfile"})
 public class User implements UserDetails {
 
     @Id
@@ -53,42 +55,25 @@ public class User implements UserDetails {
     private String resetPasswordToken;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Address> addresses;
+    @Builder.Default
+    private List<Address> addresses = new java.util.ArrayList<>();
 
     @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL)
     private Cart cart;
+
+    // ✅ CORRECTION : relation manquante — ProductService appelait getSeller().getSellerProfile()
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SellerProfile sellerProfile;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
-    @Override
-    public String getPassword() {
-        return motDePasse;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return actif;
-    }
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    @Override public String getPassword()  { return motDePasse; }
+    @Override public String getUsername()  { return email; }
+    @Override public boolean isEnabled()   { return actif; }
+    @Override public boolean isAccountNonExpired()     { return true; }
+    @Override public boolean isAccountNonLocked()      { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
 }
