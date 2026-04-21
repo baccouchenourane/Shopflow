@@ -22,7 +22,7 @@ public class ReviewService {
 
     public ReviewResponse create(ReviewRequest request, String email) {
         User customer = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ResourceNotFoundException("Produit", request.getProductId()));

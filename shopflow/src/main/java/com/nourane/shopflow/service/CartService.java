@@ -52,7 +52,7 @@ public class CartService {
             variant = product.getVariants().stream()
                     .filter(v -> v.getId().equals(request.getVariantId()))
                     .findFirst()
-                    .orElseThrow(() -> new ResourceNotFoundException("Variante introuvable"));
+                    .orElseThrow(() -> new ResourceNotFoundException("Variante introuvable", "email", email));
         }
 
         // Vérifier stock
@@ -96,7 +96,7 @@ public class CartService {
         CartItem item = cart.getItems().stream()
                 .filter(i -> i.getId().equals(itemId))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Article introuvable dans le panier"));
+                .orElseThrow(() -> new ResourceNotFoundException("Article introuvable dans le panier", "email", email));
 
         int stockDispo = item.getVariant() != null
                 ? item.getVariant().getStockSupplementaire()
@@ -144,7 +144,7 @@ public class CartService {
 
     public Cart getOrCreateCart(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
         return cartRepository.findByCustomerId(user.getId())
                 .orElseGet(() -> {
                     Cart cart = Cart.builder().customer(user).build();

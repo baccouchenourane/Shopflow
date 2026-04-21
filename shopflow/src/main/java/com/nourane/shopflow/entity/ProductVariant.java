@@ -32,4 +32,16 @@ public class ProductVariant {
 
     @Builder.Default
     private BigDecimal prixDelta = BigDecimal.ZERO;
+
+    public int getStock() {
+        return 0;
+    }
+
+    public BigDecimal getPrixSupplement() {
+        return null;
+    }
+
+    public String getNom() {
+        return null;
+    }
 }

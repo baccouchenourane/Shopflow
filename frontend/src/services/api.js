@@ -1,7 +1,10 @@
 import axios from 'axios'
 
+// Change ici : utilise l'URL complète du backend
+const API_BASE_URL = 'http://localhost:8082/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 })
 
@@ -50,7 +53,8 @@ api.interceptors.response.use(
       }
 
       try {
-        const { data } = await axios.post('/api/auth/refresh', { refreshToken })
+        // Change aussi l'URL du refresh ici
+        const { data } = await axios.post('http://localhost:8082/api/auth/refresh', { refreshToken })
         localStorage.setItem('accessToken', data.accessToken)
         localStorage.setItem('refreshToken', data.refreshToken)
         api.defaults.headers.Authorization = `Bearer ${data.accessToken}`

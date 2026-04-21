@@ -81,7 +81,7 @@ public class AddressService {
 
     private User getUser(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
     }
 
     private AddressResponse toResponse(Address a) {

@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.nourane.shopflow.dto.product.ProductDTOs.*;
 import com.nourane.shopflow.entity.*;
 import com.nourane.shopflow.entity.enums.Role;
-import com.nourane.shopflow.exception.BusinessException;
 import com.nourane.shopflow.exception.ResourceNotFoundException;
 import com.nourane.shopflow.repository.*;
 import com.nourane.shopflow.repository.specification.ProductSpecification;
@@ -71,7 +70,10 @@ public class ProductService {
 
     public ProductResponse create(ProductRequest request, String sellerEmail) {
         User seller = userRepository.findByEmail(sellerEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Vendeur introuvable"));
+                .orElseThrow(() -> {
+                    String email = "";
+                    return new ResourceNotFoundException("Vendeur introuvable", "email", email);
+                });
 
         Product product = Product.builder()
                 .seller(seller)
@@ -112,8 +114,9 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produit", id));
 
+        String email = "";
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         // Vérifier que le vendeur est propriétaire ou que c'est un admin
         if (user.getRole() != Role.ADMIN && !product.getSeller().getEmail().equals(userEmail)) {
@@ -138,8 +141,9 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Produit", id));
 
+        String email = "";
         User user = userRepository.findByEmail(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         if (user.getRole() != Role.ADMIN && !product.getSeller().getEmail().equals(userEmail)) {
             throw new AccessDeniedException("Vous n'êtes pas autorisé à supprimer ce produit");

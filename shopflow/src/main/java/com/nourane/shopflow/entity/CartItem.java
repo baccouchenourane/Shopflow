@@ -3,6 +3,8 @@ package com.nourane.shopflow.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "cart_items")
 @Data
@@ -27,7 +29,19 @@ public class CartItem {
     @JoinColumn(name = "variant_id")
     private ProductVariant variant;
 
-    @Column(nullable = false)
+    @Column(name = "prix_unitaire")
+    private BigDecimal prixUnitaire;
     @Builder.Default
     private Integer quantite = 1;
+
+    public int getQuantity() {
+        return 0;
+    }
+
+    public void setQuantity(int newQuantity) {
+    }
+
+    public BigDecimal getPrixUnitaire() {
+        return null;
+    }
 }

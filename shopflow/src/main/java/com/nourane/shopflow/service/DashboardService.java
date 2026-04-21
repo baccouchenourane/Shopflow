@@ -55,7 +55,7 @@ public class DashboardService {
 
     public SellerDashboard getSellerDashboard(String email) {
         User seller = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Vendeur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Vendeur introuvable", "email", email));
 
         SellerDashboard dashboard = new SellerDashboard();
         dashboard.setRevenus(orderRepository.calculateRevenuVendeur(seller.getId()));
@@ -87,7 +87,7 @@ public class DashboardService {
 
     public CustomerDashboard getCustomerDashboard(String email) {
         User customer = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Client introuvable", "email", email));
 
         CustomerDashboard dashboard = new CustomerDashboard();
         List<Order> orders = orderRepository.findByCustomerId(customer.getId(), PageRequest.of(0, 100)).getContent();

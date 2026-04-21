@@ -19,7 +19,6 @@ import com.nourane.shopflow.repository.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -40,7 +39,7 @@ public class OrderService {
 
     public OrderResponse createOrder(CreateOrderRequest request, String email) {
         User customer = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         Cart cart = cartRepository.findByCustomerId(customer.getId())
                 .orElseThrow(() -> new BusinessException("Panier introuvable"));
@@ -139,7 +138,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Commande", id));
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         // Vérifier accès : client voit ses propres commandes, admin et vendeur voient tout
         if (user.getRole() == Role.CUSTOMER && !order.getCustomer().getEmail().equals(email)) {
@@ -158,7 +157,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderResponse> getMyOrders(String email, int page, int size) {
         User customer = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateCommande").descending());
         return orderRepository.findByCustomerId(customer.getId(), pageable).map(this::toResponse);
     }
@@ -172,7 +171,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public Page<OrderResponse> getSellerOrders(String email, int page, int size) {
         User seller = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateCommande").descending());
         return orderRepository.findBySellerId(seller.getId(), pageable).map(this::toResponse);
     }
@@ -182,7 +181,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Commande", id));
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         // Validation de la transition de statut
         validateStatusTransition(order.getStatut(), request.getStatut(), user.getRole());
@@ -200,7 +199,7 @@ public class OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("Commande", id));
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable", "email", email));
 
         // Un client ne peut annuler que ses propres commandes
         if (user.getRole() == Role.CUSTOMER && !order.getCustomer().getEmail().equals(email)) {

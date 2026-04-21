@@ -54,7 +54,7 @@ public class AuthService {
 
         // Créer profil vendeur si nécessaire
         if (user.getRole() == Role.SELLER) {
-            if (request.getNomBoutique() == null || request.getNomBoutique().isBlank()) {
+            if (request.getNomBoutique() == null || request.getNomBoutique().trim().isEmpty()) {
                 throw new BusinessException("Le nom de boutique est obligatoire pour un vendeur");
             }
             SellerProfile profile = SellerProfile.builder()
@@ -67,7 +67,9 @@ public class AuthService {
 
         // Créer panier pour les clients
         if (user.getRole() == Role.CUSTOMER) {
-            Cart cart = Cart.builder().customer(user).build();
+            Cart cart = Cart.builder()
+                    .customer(user)
+                    .build();
             cartRepository.save(cart);
         }
 
@@ -138,7 +140,8 @@ public class AuthService {
     }
 
     private AuthResponse buildAuthResponse(User user) {
-        String accessToken = jwtService.generateToken(user);
+        String accessToken;
+        accessToken = jwtService.generateToken(user);
 
         RefreshToken refreshToken = RefreshToken.builder()
                 .token(UUID.randomUUID().toString())

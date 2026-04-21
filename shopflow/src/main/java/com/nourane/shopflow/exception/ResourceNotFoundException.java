@@ -1,7 +1,7 @@
 package com.nourane.shopflow.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String message) {
+    public ResourceNotFoundException(String message, String email, String s) {
         super(message);
     }
     public ResourceNotFoundException(String resource, Long id) {

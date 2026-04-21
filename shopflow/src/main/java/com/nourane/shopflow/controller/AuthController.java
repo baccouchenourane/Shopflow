@@ -20,7 +20,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @Operation(summary = "Inscription client ou vendeur")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
+    public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) throws InterruptedException {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
     }
 

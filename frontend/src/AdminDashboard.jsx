@@ -1,6 +1,7 @@
 import { Users, Settings, BarChart3, ShieldAlert } from 'lucide-react'
 import { Card } from './components/ui'
-
+import { useEffect, useState } from 'react';
+import { dashboardService } from './services/services';
 export default function AdminDashboard() {
   return (
     <div className="container" style={{ padding: '40px 0' }}>
